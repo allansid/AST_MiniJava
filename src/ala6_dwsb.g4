@@ -1,17 +1,19 @@
 grammar ala6_dwsb;
 
+WHITESPACE 			: [' \r\n\t']+ -> skip;
+OPERATOR 			: ( '&&' | '<' | '+' | '-' | '*' );
+IDENTIFIER 			: [a-zA-Z0-9_]+;
+INTEGER_LITERAL 	: [0-9]+;
+
 goal 				: mainClass ( classDeclaration )* EOF;
 mainClass 			: 'class' IDENTIFIER '{' 'public' 'static' 'void' 'main' '(' 'String' '[' ']' IDENTIFIER ')' '{' statement '}' '}';
 classDeclaration	:'class' IDENTIFIER ( 'extends' IDENTIFIER )? '{' ( varDeclaration )* ( methodDeclaration )* '}';
 varDeclaration 		: type IDENTIFIER ';';
-methodDeclaration 	: 'public' type IDENTIFIER '(' (formalList)? ')' '{' ( varDeclaration )* ( statement )* 'return' expression ';' '}';
-type				: 'int' '[' ']' 
-					| 'boolean' 
-					| 'int' 
-					|IDENTIFIER;
+//Diogo, tirei o Formal do methodDecl p poder ajeitar e rodar, tava dando erro.
+methodDeclaration 	:'public' type IDENTIFIER '(' ( type IDENTIFIER ( ',' type IDENTIFIER )* )? ')' '{' ( varDeclaration )*( statement )* 'return' expression ';' '}';
+type				: 'int' '[' ']' | 'boolean' | 'int' |IDENTIFIER;
 formalList			: type IDENTIFIER (',' formal)*;
 formal				: type IDENTIFIER;
-
 statement 			: '{' ( statement )* '}'
 					| 'if' '(' expression ')' statement 'else' statement
 					| 'while' '(' expression ')' statement
@@ -31,7 +33,3 @@ expression			: expression OPERATOR expression
 					| 'new' IDENTIFIER '(' ')'
 					| '!' expression
 					| '(' expression ')';
-OPERATOR 			: ( '&&' | '<' | '+' | '-' | '*' );
-IDENTIFIER 			: [a-zA-Z0-9_]+;
-INTEGER_LITERAL 	: [0-9]+;
-WHITESPACE 			: [' \r\n\t']+ -> skip;

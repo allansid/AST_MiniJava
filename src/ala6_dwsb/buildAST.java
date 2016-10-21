@@ -18,6 +18,7 @@ import ast.Formal;
 import ast.FormalList;
 import ast.Identifier;
 import ast.IdentifierExp;
+import ast.IdentifierType;
 import ast.If;
 import ast.IntArrayType;
 import ast.IntegerLiteral;
@@ -153,61 +154,57 @@ public class buildAST {
 	private Exp visitExpression(ExpressionContext expression) {
 		Exp aux = null;
 		TerminalNode oper = expression.OPERATOR();
-		TerminalNode id = expression.IDENTIFIER();
-
-		TerminalNode no = expression.INTEGER_LITERAL();
+		TerminalNode ids = expression.IDENTIFIER();
+		TerminalNode literal = expression.INTEGER_LITERAL();
+		String text = expression.getText();
 		if (oper != null) {
-			Exp expre1 = this.visitExpression(expression.expression().get(0));
-			Exp expre2 = this.visitExpression(expression.expression().get(1));
-			if (oper.equals("<")) {
-				aux = new LessThan(expre1, expre2);
-			} else if (oper.equals("&&")) {
-				aux = new And(expre1, expre2);
-			} else if (oper.equals("-")) {
-				aux = new Minus(expre1, expre2);
-			} else if (oper.equals("*")) {
-				aux = new Times(expre1, expre2);
-			} else if (oper.equals("+")) {
-				aux = new Plus(expre1, expre2);
+			Exp exp1 = this.visitExpression(expression.expression(0));
+			Exp exp2 = this.visitExpression(expression.expression(1));
+
+			if (oper.getText().equals("&&")) {
+				return new And(exp1, exp2);
+			} else if (oper.getText().equals("<")) {
+				return new LessThan(exp1, exp2);
+			} else if (oper.getText().equals("+")) {
+				return new Plus(exp1, exp2);
+			} else if (oper.getText().equals("*")) {
+				return new Times(exp1, exp2);
+			} else if (oper.getText().equals("-")) {
+				return new Minus(exp1, exp2);
 			}
-		} else if (expression.expression().size() >= 1 && id != null) {
-			aux = new Call(this.visitExpression(expression.expression().get(0)), new Identifier(id.getText()),
-					this.visitExpList(expression.expression().subList(1, expression.expression().size())));
-		} else if (expression.getText().equals("this")) {
-			aux = new This();
-		} else if (expression.getText().equals("true")) {
-			aux = new True();
-		} else if (expression.getText().equals("false")) {
-			aux = new False();
+		} else if (text.contains("!")) {
+			return new Not(this.visitExpression(expression.expression(0)));
+		} else if (expression.expression().size() >= 1 && ids != null) {
+			return new Call(this.visitExpression(expression.expression(0)), new Identifier(ids.getText()), this.visitExpList(expression.expression().subList(1, expression.expression().size())));
+		} else if (expression.getText().contains("true")) {
+			return new True();
+		} else if (expression.getText().contains("false")) {
+			return new False();
+		} else if (expression.getText().contains("this")) {
+			return new This();
 		} else if (expression.expression().size() == 2) {
-			aux = new ArrayLookup(this.visitExpression(expression.expression().get(0)),
-					this.visitExpression(expression.expression().get(1)));
-		} else if (expression.expression().size() == 1 && expression.getText().equals("new")) {
-			aux = new ArrayLength(this.visitExpression(expression.expression().get(0)));
-		} else if (no != null) {
-			aux = new IntegerLiteral(Integer.parseInt(no.getText()));
-		} else if (id != null && !expression.getText().equals("new")) {
-			aux = new IdentifierExp(id.getText());
-		} else if (expression.getText().equals("new")) {
+			return new ArrayLookup(this.visitExpression(expression.expression(0)), this.visitExpression(expression.expression(1)));
+		} else if (expression.expression().size() == 1 && !text.contains("new")) {
+			return new ArrayLength(this.visitExpression(expression.expression(0)));
+		} else if (literal != null) {
+			return new IntegerLiteral(Integer.parseInt(literal.getText()));
+		} else if (ids != null && !text.contains("new")) {
+			return new IdentifierExp(ids.getText());
+		} else if (text.contains("new")) {
 			if (expression.expression().size() == 1) {
-				aux = new NewArray(this.visitExpression(expression.expression().get(0)));
+				return new NewArray(this.visitExpression(expression.expression(0)));
 			} else {
-				aux = new NewObject(new Identifier(id.getText()));
+				return new NewObject(new Identifier(ids.getText()));
 			}
-		} else if (expression.getText().equals("!")) {
-			aux = new Not(this.visitExpression(expression.expression().get(0)));
-		} else {
-			aux = this.visitExpression(expression.expression().get(0));
 		}
-		return aux;
+		return this.visitExpression(expression.expression(0));
 	}
 
 	private ExpList visitExpList(List<ExpressionContext> subList) {
-		ExpList expL = new ExpList();
-		for (int i = 0; i < subList.size(); i++) {
-			expL.addElement(this.visitExpression(subList.get(i)));
-		}
-		return expL;
+		ExpList expList = new ExpList();
+		for (int i = 0; i < subList.size(); i++)
+			expList.addElement(this.visitExpression(subList.get(i)));
+		return expList;
 	}
 
 	private ClassDeclList visitClassDeclList(List<ClassDeclarationContext> classDeclaration) {
@@ -215,9 +212,8 @@ public class buildAST {
 		for (ClassDeclarationContext c : classDeclaration) {
 			if (c.IDENTIFIER().size() > 1)
 				classDecList.addElement(this.visitClassDeclExtends(c));
-			else {
+			else
 				classDecList.addElement(this.visitClassDecl(c));
-			}
 		}
 		return classDecList;
 	}
@@ -241,9 +237,15 @@ public class buildAST {
 
 	private MethodDecl visitMethodDecl(MethodDeclarationContext m) {
 		MethodDecl aux;
-		Type type = this.visitType(m.type());
-		Identifier identifier = this.visitIdentifier(m.IDENTIFIER());
-		FormalList formal =  null; //= this.visitFormalList(m.formalList());
+		FormalList formal = new FormalList();
+		List<TypeContext> types = m.type();
+		Type type = this.visitType(types.get(0));
+		List<TerminalNode> tokens = m.IDENTIFIER();
+		Identifier identifier = new Identifier(tokens.get(0).getText());
+		int i;
+		for (i = 1; i < types.size(); i++) {
+			formal.addElement(new Formal(this.visitType(types.get(i)), new Identifier(tokens.get(i).getText())));
+		}
 		VarDeclList vdl = this.visitVarDeclList(m.varDeclaration());
 		StatementList statement = this.visitStatementList(m.statement());
 		Exp exp = this.visitExpression(m.expression());
@@ -282,8 +284,10 @@ public class buildAST {
 			aux = new IntegerType();
 		} else if (type.getText().equals("boolean")) {
 			aux = new BooleanType();
+		} else {
+			aux = new IdentifierType(type.IDENTIFIER().getText());
 		}
-		// Diogo, vê se não precisa de mais nada aqui, por favor.
+		// Diogo, v� se precisa adc o Identifier aqui, por favor.
 		return aux;
 	}
 
@@ -308,5 +312,4 @@ public class buildAST {
 		aux = new ClassDeclExtends(identifier1, identifier2, varList, method);
 		return aux;
 	}
-
 }

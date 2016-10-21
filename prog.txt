@@ -26,7 +26,7 @@ class BS{
 	else System.out.println(0) ;
 	if (this.Search(38)) System.out.println(1) ;
 	else System.out.println(0) ;
-	if (this.Search(39)) System.out.println(1) ;
+	if (this.Search(40)) System.out.println(1) ;
 	else System.out.println(0) ;
 	if (this.Search(50)) System.out.println(1) ;
 	else System.out.println(0) ;
@@ -131,7 +131,7 @@ class BS{
 		j = j + 1 ;
 		k = k - 1 ;
 	}
-	return 0 ;	
+	return 1 ;	
 	}
 
 }

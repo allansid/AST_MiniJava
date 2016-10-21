@@ -1,5 +1,4 @@
 // Generated from ala6_dwsb.g4 by ANTLR 4.4
-package ala6_dwsb.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

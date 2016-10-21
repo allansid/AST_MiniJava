@@ -47,16 +47,16 @@ import java.util.List;
 
 // para utilizar as classes equivalentes _Context
 import org.antlr.v4.runtime.tree.TerminalNode;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.ClassDeclarationContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.ExpressionContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.FormalContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.FormalListContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.GoalContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.MainClassContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.MethodDeclarationContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.StatementContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.TypeContext;
-import ala6_dwsb.antlr4.grammar_ala6_dwsbParser.VarDeclarationContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.ClassDeclarationContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.ExpressionContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.FormalContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.FormalListContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.GoalContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.MainClassContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.MethodDeclarationContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.StatementContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.TypeContext;
+import ala6_dwsb.antlr4.ala6_dwsbParser.VarDeclarationContext;
 
 public class buildAST {
 

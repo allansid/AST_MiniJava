@@ -202,8 +202,7 @@ public class buildAST {
 
 	private ExpList visitExpList(List<ExpressionContext> subList) {
 		ExpList expList = new ExpList();
-		for (int i = 0; i < subList.size(); i++)
-			expList.addElement(this.visitExpression(subList.get(i)));
+		for (int i = 0; i < subList.size(); i++) expList.addElement(this.visitExpression(subList.get(i)));
 		return expList;
 	}
 

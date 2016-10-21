@@ -283,7 +283,7 @@ public class buildAST {
 		} else if (type.getText().equals("boolean")) {
 			aux = new BooleanType();
 		}
-		// Diogo, vê se não precisa adc o Identifier aqui, por favor.
+		// Diogo, vÃª se nÃ£o precisa de mais nada aqui, por favor.
 		return aux;
 	}
 
@@ -310,5 +310,3 @@ public class buildAST {
 	}
 
 }
-// VarDeclList , MethodDeclList tem o mesmo formato, da p colocar em uma função
-// só?

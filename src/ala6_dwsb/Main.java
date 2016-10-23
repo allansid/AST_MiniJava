@@ -13,7 +13,19 @@ import visitor.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException{
-		FileInputStream stream = new FileInputStream("prog.txt");
+		String inputString[] = {
+				"BinarySearch.java",		
+				"BinaryTree.java",
+				"BubbleSort.java",
+				"Factorial.java",
+				"LinearSearch.java",
+				"LinkedList.java",
+				"QuickSort.java",
+				"auxBinarySearch.txt", 	/*No comments*/
+				"auxBubbleSort.txt"		/*No comments*/
+		};
+
+		FileInputStream stream = new FileInputStream("input/" + inputString[8]);
 		ANTLRInputStream input = new ANTLRInputStream(stream);
 		ala6_dwsbLexer lexer = new ala6_dwsbLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

@@ -3,7 +3,6 @@ package visitor;
 import symboltable.Class;
 import symboltable.Method;
 import symboltable.SymbolTable;
-import symboltable.Variable;
 import ast.And;
 import ast.ArrayAssign;
 import ast.ArrayLength;
@@ -219,11 +218,9 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Statement s1,s2;
 	public Type visit(If n) {
 		Type eType = n.e.accept(this);
-		Type s1Type = n.s1.accept(this);
-		Type s2Type = n.s2.accept(this);
 				
 		if (!(eType instanceof BooleanType)) {
-			System.out.println("If: " + n.e.toString() + " não é Boolean");
+			System.out.println(n.e.toString() + " não é Boolean");
 			n.accept(new PrettyPrintVisitor());
 		}
 		return null;
@@ -233,10 +230,9 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Statement s;
 	public Type visit(While n) {
 		Type eType = n.e.accept(this);
-		Type sType = n.s.accept(this);
 		
 		if (!(eType instanceof BooleanType)) {
-			System.out.println("While: " + n.e.toString() + " não é Boolean");
+			System.out.println(n.e.toString() + " não é Boolean");
 			n.accept(new PrettyPrintVisitor());
 		}
 		return null;
@@ -263,15 +259,14 @@ public class TypeCheckVisitor implements TypeVisitor {
 			System.out.println(n.i.s + " e " + n.e.toString() + " são de tipos diferentes");
 			n.accept(new PrettyPrintVisitor());
 		}
+		
 		return null;
 	}
 
 	// Identifier i;
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
-		Type iType = n.i.accept(this);
 		Type e1Type = n.e1.accept(this);
-		Type e2Type = n.e2.accept(this);
 		
 		if (!(e1Type instanceof IntegerType)) {
 			System.out.println(n.e1.toString() + " não é Int");
@@ -308,12 +303,12 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (e1Type == null || e2Type == null) return null;
 		
 		if (!(e1Type instanceof IntegerType)) {
-			System.out.println("LessThan: " + e1Type + " não é Int");
+			System.out.println(e1Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
 		if (!(e2Type instanceof IntegerType)) {
-			System.out.println("LessThan: " + e2Type + " não é Int");
+			System.out.println(e2Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
@@ -328,12 +323,12 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (e1Type == null || e2Type == null) return null;
 
 		if (!(e1Type instanceof IntegerType)) {
-			System.out.println("Plus: " + e1Type + " não é Int");
+			System.out.println(e1Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
 		if (!(e2Type instanceof IntegerType)) {
-			System.out.println("Plus: " + e2Type + " não é Int");
+			System.out.println(e2Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
@@ -348,12 +343,12 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (e1Type == null || e2Type == null)	return null;
 		
 		if (!(e1Type instanceof IntegerType)) {
-			System.out.println("Minus: " + e1Type + " não é Int");
+			System.out.println(e1Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
 		if (!(e2Type instanceof IntegerType)) {
-			System.out.println("Minus: " + e2Type + " não é Int");
+			System.out.println(e2Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
@@ -368,12 +363,12 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (e1Type == null || e2Type == null)	return null;
 		
 		if (!(e1Type instanceof IntegerType)) {
-			System.out.println("Times: " + e1Type + " não é Int");
+			System.out.println(e1Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
 		if (!(e2Type instanceof IntegerType)) {
-			System.out.println("Times: " + e2Type + " não é Int");
+			System.out.println(e2Type + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			return null;
 		}
@@ -421,7 +416,7 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// ExpList el;
 	public Type visit(Call n) {
 		Type eType = n.e.accept(this);
-		Type vt1 = null;
+		Type aux = null;
 		if (eType instanceof IdentifierType) {
 			if (symbolTable.containsClass(((IdentifierType) eType).s)) {
 				Class objectClass = symbolTable.getClass(((IdentifierType) eType).s);
@@ -432,21 +427,16 @@ public class TypeCheckVisitor implements TypeVisitor {
 					currMethod = null;
 					n.i.accept(this);
 					this.currMethod = currClass.getMethod(n.i.s);
-					vt1 = currClass.getMethod(n.i.s).type();
+					aux = currClass.getMethod(n.i.s).type();
 					this.currClass = tempClass;
 					this.currMethod = tempMethod;
-					for (int i = 0; i < n.el.size(); i++) {
-						n.el.elementAt(i).accept(this);
-					}
-				} else {
-					System.out.println("Nenhum metodo " + n.i.s + "encontrado na classe "
-							+ ((IdentifierType) eType).s + ".");
-				}
-			} else {
-				System.out.println("Nenhuma classe " + ((IdentifierType) eType).s + " encontrada.");
-			}
+					for (int i = 0; i < n.el.size(); i++)	n.el.elementAt(i).accept(this);
+					
+				} else System.out.println("Nenhum metodo " + n.i.s + " foi encontrado na classe " + ((IdentifierType) eType).s + ".");
+				
+			} else System.out.println("Nenhuma classe " + ((IdentifierType) eType).s + "foi encontrada.");
 		}
-		return vt1;
+		return aux;
 	}
 
 	// int i;

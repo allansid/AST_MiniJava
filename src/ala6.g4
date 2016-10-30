@@ -1,4 +1,4 @@
-grammar ala6_dwsb;
+grammar ala6;
 
 WHITESPACE 			: [' \r\n\t']+ -> skip;
 OPERATOR 			: ( '&&' | '<' | '+' | '-' | '*' );

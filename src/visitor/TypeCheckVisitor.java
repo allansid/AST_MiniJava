@@ -407,9 +407,8 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (eType == null)	return null;
 		
 		IntegerType aux = null;
-		if (eType instanceof IntArrayType) {
-			aux = new IntegerType();
-		} else {
+		if (eType instanceof IntArrayType)	aux = new IntegerType();
+		else {
 			System.out.println(eType + " não é Int[]");
 			n.accept(new PrettyPrintVisitor());
 			return null;
@@ -482,9 +481,8 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (eType == null)	return null;
 		
 		IntArrayType aux = null;
-		if (eType instanceof IntegerType) {
-			aux = new IntArrayType();
-		} else {
+		if (eType instanceof IntegerType)	aux = new IntArrayType();
+		else {
 			System.out.println(eType + " não é Int");
 			n.accept(new PrettyPrintVisitor());
 			System.out.println("");
@@ -500,9 +498,8 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (iType == null)	return null;
 		
 		IdentifierType aux = null;
-		if (symbolTable.containsClass(n.i.s)) {
-			aux = new IdentifierType(n.i.s);
-		} else {
+		if (symbolTable.containsClass(n.i.s))	aux = new IdentifierType(n.i.s);
+		else {
 			System.out.println(n.i.s + " não existe");
 			n.accept(new PrettyPrintVisitor());
 			return null;
@@ -517,9 +514,8 @@ public class TypeCheckVisitor implements TypeVisitor {
 		if (eType == null)	return null;
 		
 		BooleanType aux = null;
-		if (eType instanceof BooleanType) {
-			aux = new BooleanType();
-		} else {
+		if (eType instanceof BooleanType)	aux = new BooleanType();
+		else {
 			System.out.println(eType + " não é Boolean");
 			n.accept(new PrettyPrintVisitor());
 			return null;

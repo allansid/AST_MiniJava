@@ -169,6 +169,7 @@ public class BuildSymbolTableVisitor implements Visitor {
 	// Identifier i;
 	public void visit(Formal n) {
 		this.symbolTable.getClass(currClass.getId()).getMethod(currMethod.getId()).addParam(n.i.s, n.t);
+		
 		n.t.accept(this);
 		n.i.accept(this);
 	}

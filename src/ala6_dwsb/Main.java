@@ -13,7 +13,7 @@ import visitor.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException{
-		boolean pt1 = true, pt2 = false;
+		boolean pt1 = false, pt2 = true;
 		
 		String inputString[] = {
 				"BinarySearch.java",		
@@ -24,7 +24,8 @@ public class Main {
 				"LinkedList.java",
 				"QuickSort.java",
 				"auxBinarySearch.txt",	/*No comments*/
-				"auxBubbleSort.txt"	/*No comments*/
+				"auxBubbleSort.txt",	/*No comments*/
+				"testTC.txt"	
 		};
 
 		FileInputStream stream = new FileInputStream("input/" + inputString[7]);
